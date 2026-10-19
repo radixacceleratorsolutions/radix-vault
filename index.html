@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Radix Vault | One Piece Card Game booster boxes and packs</title>
+<meta name="description" content="Factory-sealed One Piece Card Game booster boxes and sleeved booster packs from Radix Vault.">
+<style>
+:root{--bg:#eef1f5;--ink:#0f1b2d;--mute:#56657a;--acc:#1d3a63;--brass:#a97a22;--card:#fff;--line:#d5dce5}
+@media(prefers-color-scheme:dark){:root{--bg:#0e1520;--ink:#e9eef5;--mute:#9aa9bb;--acc:#7fa8e0;--brass:#d9a64a;--card:#162030;--line:#27344a}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,sans-serif}
+h1,h2,h3,.logo{font-family:Georgia,'Times New Roman',serif;line-height:1.15}h2{margin-top:40px}
+a{color:inherit}header{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center;padding:14px 5vw;border-bottom:3px solid var(--brass);background:var(--card)}
+.logo{font-size:1.6rem;font-weight:700;text-decoration:none;margin-right:auto}.logo small{display:block;font:400 .72rem system-ui,sans-serif;color:var(--mute)}
+nav{display:flex;gap:20px;align-items:center;flex-wrap:wrap}nav a{text-decoration:none;color:var(--mute)}nav a:hover,nav a:focus-visible{color:var(--acc);text-decoration:underline}
+main{max-width:1080px;margin:0 auto;padding:24px 5vw 64px}
+.hero{display:grid;grid-template-columns:1.1fr 1fr;gap:32px;align-items:center;padding:clamp(16px,4vw,48px) 0}.hero h1{font-size:clamp(2.1rem,5vw,3.4rem);margin:0 0 12px}.hero p{color:var(--mute);max-width:44ch}
+.sets{display:grid;gap:12px}.set{background:linear-gradient(120deg,var(--c),#0f1b2d);color:#fff;border-radius:10px;padding:18px 22px;text-decoration:none;display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.set b{font:700 1.7rem Georgia,serif}.set:hover,.set:focus-visible{outline:3px solid var(--brass)}
+@media(max-width:760px){.hero{grid-template-columns:1fr}}
+.btn{display:inline-block;background:var(--acc);color:var(--bg);border:0;border-radius:8px;padding:11px 20px;font:inherit;font-weight:600;cursor:pointer;text-decoration:none}
+.btn.alt{background:none;color:var(--acc);border:1px solid var(--acc)}.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:20px;margin-top:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:8px;align-content:start}.card h3{font-size:1.02rem;margin:0}.card a{text-decoration:none}
+.tile{aspect-ratio:4/3;width:100%;border-radius:8px;background:linear-gradient(150deg,var(--c),#0f1b2d);color:#fff;display:grid;place-content:center;text-align:center;object-fit:cover}
+.tile b{font:700 2.4rem Georgia,serif}.tile span{opacity:.85;font-size:.9rem}
+.price{font-weight:700;font-size:1.15rem}.tag{font-size:.85rem;color:var(--mute)}
+.badge{font-size:.78rem;border:1px solid var(--line);border-radius:99px;padding:1px 9px;width:max-content;color:var(--mute)}.badge.low{color:var(--brass);border-color:var(--brass)}.badge.out{color:#c0392b;border-color:#c0392b}
+.bar{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
+input,select{font:inherit;padding:10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.row{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+form{display:grid;gap:12px;max-width:360px}.err{color:#c0392b}.q button{width:32px;height:32px;border-radius:6px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.detail{display:grid;grid-template-columns:1fr 1fr;gap:28px}@media(max-width:760px){.detail{grid-template-columns:1fr}}.detail dl{display:grid;grid-template-columns:auto 1fr;gap:4px 16px}.detail dt{color:var(--mute)}.detail dd{margin:0}
+.sum{max-width:340px;margin-left:auto;display:grid;gap:4px;padding-top:12px}.sum div{display:flex;justify-content:space-between}
+.adm input{width:90px;padding:6px}.adm .row input.t{width:170px}
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:8px;z-index:9}
+footer{border-top:1px solid var(--line);color:var(--mute);padding:24px 5vw;font-size:.85rem;display:grid;gap:8px;text-align:center}footer nav{justify-content:center}
+</style></head><body>
+<header><a class="logo" href="#/">Radix Vault<small>by Radix Accelerator Solutions LLC</small></a><nav id="nav"></nav></header>
+<main id="app"></main>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<footer id="foot"></footer>
+<script>
+const $ = s => document.querySelector(s), app = $('#app');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = n => '$' + Number(n).toFixed(2);
+let P = [], C = {}, cart = JSON.parse(localStorage.cart || '{}'), tok = localStorage.tok, uname = localStorage.uname, isAdmin = localStorage.admin === '1';
+const count = () => Object.values(cart).reduce((a, b) => a + b, 0);
+const persist = () => { localStorage.cart = JSON.stringify(cart); nav(); };
+const get = id => P.find(p => p.id === id);
+const sets = () => [...new Map(P.map(p => [p.set, p])).values()];
+const say = m => { const t = $('#toast'); t.textContent = m; t.hidden = false; clearTimeout(say.t); say.t = setTimeout(() => t.hidden = true, 2600); };
+const api = async (u, b) => {
+  const r = await fetch('/api/' + u, { method: b ? 'POST' : 'GET', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + tok }, body: b && JSON.stringify(b) });
+  const j = await r.json(); if (!r.ok) throw Error(j.error); return j;
+};
+function nav() {
+  $('#nav').innerHTML = `<a href="#/shop">Shop</a><a href="#/shop?category=Booster%20Boxes">Booster boxes</a><a href="#/shop?category=Sleeved%20Booster%20Packs">Sleeved packs</a><a href="#/info">About &amp; policies</a><a href="#/cart">Cart (${count()})</a>` +
+    (isAdmin ? '<a href="#/admin">Admin</a>' : '') + (tok ? `<a href="#/account">${esc(uname)}</a>` : '<a href="#/login">Log in</a>');
+}
+const stock = p => p.stock <= 0 ? '<span class="badge out">Sold out</span>' : p.stock <= 5 ? `<span class="badge low">Only ${p.stock} left</span>` : '<span class="badge">In stock</span>';
+const tile = p => p.image ? `<img class="tile" src="${esc(p.image)}" alt="${esc(p.name)}">` : `<div class="tile" style="--c:${esc(p.color)}"><b>${esc(p.set)}</b><span>${esc(p.kind)}</span></div>`;
+const card = p => `<div class="card">${tile(p)}<a href="#/product/${p.id}"><h3>${esc(p.name)}</h3></a>${stock(p)}<span class="price">${money(p.price)}</span>
+<button class="btn" ${p.stock <= 0 ? 'disabled' : ''} onclick="add('${p.id}')">${p.stock <= 0 ? 'Sold out' : 'Add to cart'}</button></div>`;
+window.add = id => { const p = get(id), n = (cart[id] || 0) + 1;
+  if (n > p.limit) return say(`Limit ${p.limit} per order.`); if (n > p.stock) return say('No more in stock.');
+  cart[id] = n; persist(); say('Added to cart.'); };
+window.qty = (id, d) => { const p = get(id), n = (cart[id] || 0) + d;
+  if (d > 0 && n > p.limit) return say(`Limit ${p.limit} per order.`); if (d > 0 && n > p.stock) return say('No more in stock.');
+  if (n < 1) delete cart[id]; else cart[id] = n; persist(); route(); };
+const status = o => ({ pending: 'Awaiting payment', paid: 'Paid, preparing to ship', shipped: 'Shipped' }[o.status] || o.status) + (o.tracking ? ` (tracking: ${esc(o.tracking)})` : '');
+const addr = a => a ? esc([a.name, a.address?.line1, a.address?.line2, a.address?.city, a.address?.state, a.address?.postal_code, a.address?.country].filter(Boolean).join(', ')) : 'No address';
+
+const views = {
+  home: () => `<section class="hero"><div><h1>Sealed One Piece Card Game, shipped from Radix Vault.</h1><p>${esc(C.tagline)} Booster boxes and sleeved booster packs from the newest English sets.</p>
+<a class="btn" href="#/shop">Shop all products</a></div><div class="sets">${sets().map(s => `<a class="set" style="--c:${esc(s.color)}" href="#/shop?set=${esc(s.set)}"><b>${esc(s.set)}</b><span>${esc(s.setName)}</span></a>`).join('')}</div></section>
+<h2>Booster boxes</h2><div class="grid">${P.filter(p => p.kind === 'Booster Box').map(card).join('')}</div>
+<h2>Sleeved booster packs</h2><div class="grid">${P.filter(p => p.kind !== 'Booster Box').map(card).join('')}</div>`,
+  shop: (a, q) => {
+    const cat = q.get('category') || '', set = q.get('set') || '', s = (q.get('s') || '').toLowerCase(), o = q.get('o') || '';
+    const list = P.filter(p => (!cat || p.category === cat) && (!set || p.set === set) && (p.name + p.set + p.setName).toLowerCase().includes(s));
+    if (o) list.sort((a, b) => o === 'lo' ? a.price - b.price : b.price - a.price);
+    const opt = (v, cur, t) => `<option value="${esc(v)}" ${v === cur ? 'selected' : ''}>${esc(t || v)}</option>`;
+    return `<h1>Shop</h1><div class="bar"><select id="category" aria-label="Category" onchange="go()"><option value="">All categories</option>${[...new Set(P.map(p => p.category))].map(c => opt(c, cat)).join('')}</select>
+<select id="set" aria-label="Set" onchange="go()"><option value="">All sets</option>${sets().map(p => opt(p.set, set, `${p.set} ${p.setName}`)).join('')}</select>
+<select id="o" aria-label="Sort" onchange="go()">${opt('', o, 'Sort: featured')}${opt('lo', o, 'Price: low to high')}${opt('hi', o, 'Price: high to low')}</select>
+<input id="s" type="search" placeholder="Search" aria-label="Search" value="${esc(s)}" oninput="clearTimeout(window.t);window.t=setTimeout(go,300)"></div>
+<div class="grid">${list.map(card).join('') || '<p>No products match. Clear a filter or try a different search.</p>'}</div>`;
+  },
+  product: id => { const p = get(id); if (!p) return '<p>Product not found. <a href="#/shop">Back to shop</a></p>';
+    return `<div class="detail"><div>${tile(p)}</div><div><h1>${esc(p.name)}</h1>${stock(p)}<p>${esc(p.desc)}</p>
+<dl><dt>Set</dt><dd>${esc(p.set)} ${esc(p.setName)}</dd><dt>Language</dt><dd>${esc(p.lang)}</dd><dt>Contents</dt><dd>${esc(p.contents)}</dd>
+<dt>Release</dt><dd>${new Date(p.release).toLocaleDateString(undefined, { timeZone: 'UTC', dateStyle: 'long' })}</dd><dt>Order limit</dt><dd>${p.limit} per order</dd></dl>
+<p class="price">${money(p.price)}</p><button class="btn" ${p.stock <= 0 ? 'disabled' : ''} onclick="add('${p.id}')">${p.stock <= 0 ? 'Sold out' : 'Add to cart'}</button></div></div>`; },
+  cart: () => {
+    const rows = Object.entries(cart).map(([id, n]) => ({ p: get(id), n })).filter(r => r.p);
+    if (!rows.length) return '<h1>Your cart</h1><p>Your cart is empty.</p><a class="btn" href="#/shop">Browse products</a>';
+    const sub = rows.reduce((s, r) => s + r.p.price * r.n, 0), ship = sub >= C.shipping.freeOver ? 0 : C.shipping.flat;
+    return `<h1>Your cart</h1>${rows.map(({ p, n }) => `<div class="row"><span>${esc(p.name)}</span><span class="q"><button aria-label="Remove one" onclick="qty('${p.id}',-1)">−</button> ${n} <button aria-label="Add one" onclick="qty('${p.id}',1)">+</button></span><span>${money(p.price * n)}</span></div>`).join('')}
+<div class="sum"><div><span>Subtotal</span><span>${money(sub)}</span></div><div><span>Shipping</span><span>${ship ? money(ship) : 'Free'}</span></div>
+<div><strong>Estimated total</strong><strong>${money(sub + ship)}</strong></div><span class="tag">${ship ? `Free shipping on orders over ${money(C.shipping.freeOver)}. ` : ''}Sales tax, if any, is calculated at payment.</span>
+<p id="msg" class="err"></p><button class="btn" id="pay" onclick="checkout()">${tok ? 'Pay securely' : 'Log in to pay'}</button><span class="tag">Pay by card, Apple Pay or PayPal on Stripe's secure page.</span></div>`;
+  },
+  login: (a, q, mode = location.hash.includes('new') ? 'register' : 'login') => `<h1>${mode === 'login' ? 'Log in' : 'Create account'}</h1>
+<form onsubmit="return auth(event,'${mode}')">${mode === 'register' ? '<input name="name" placeholder="Name" required autocomplete="name" aria-label="Name">' : ''}
+<input name="email" type="email" placeholder="Email" required autocomplete="email" aria-label="Email"><input name="password" type="password" minlength="8" placeholder="Password (8+ characters)" required autocomplete="${mode === 'login' ? 'current-password' : 'new-password'}" aria-label="Password">
+<p id="msg" class="err"></p><button class="btn">${mode === 'login' ? 'Log in' : 'Create account'}</button></form>
+<p>${mode === 'login' ? 'New here? <a href="#/login?new">Create an account</a>' : 'Have an account? <a href="#/login">Log in</a>'}</p>`,
+  success: () => { cart = {}; persist(); return '<h1>Thank you for your order!</h1><p>Your payment went through and Stripe will email your receipt. You can follow your order in your account.</p><a class="btn" href="#/account">View orders</a>'; },
+  account: async () => {
+    if (!tok) { location.hash = '#/login'; return ''; }
+    let o = []; try { o = await api('orders'); } catch { return logout(); }
+    return `<h1>Hi, ${esc(uname)}</h1><button class="btn alt" onclick="logout()">Log out</button><h2>Your orders</h2>
+${o.map(o => `<div class="row"><span>${new Date(o.date).toLocaleDateString()}: ${o.items.map(i => esc(i.name) + ' × ' + i.qty).join(', ')}</span><span>${money(o.total ?? o.subtotal + o.shipping)}<br><span class="tag">${status(o)}</span></span></div>`).join('') || '<p>No orders yet. <a href="#/shop">Start shopping</a></p>'}`;
+  },
+  info: () => `<h1>About Radix Vault</h1><p>Radix Vault is the trading card and games storefront of ${esc(C.legalName)}. Questions or order issues: <a href="mailto:${esc(C.supportEmail)}">${esc(C.supportEmail)}</a>.</p>
+<h2>Shipping</h2><p>Orders ship within ${esc(C.shipping.handling)} of payment, to addresses in: ${esc(C.shipping.countries.join(', '))}. Shipping is ${money(C.shipping.flat)}, and free on orders over ${money(C.shipping.freeOver)}. Sealed boxes carry a per-order limit so more collectors can get one.</p>
+<h2>Returns</h2><p>${esc(C.returns)}</p><h2>Payments</h2><p>Payments are handled by Stripe. Your card or wallet details are never stored on our servers.</p>
+<h2>Privacy</h2><p>We keep your name, email, order history and shipping address to run your account and fulfill orders. We do not sell your data.</p>`,
+  admin: async () => {
+    if (!isAdmin) return '<p>Admins only.</p>';
+    const d = await api('admin');
+    return `<h1>Admin</h1><h2>Orders to fulfill</h2><div class="adm">${d.orders.map(o => `<div class="row"><span><strong>${new Date(o.date).toLocaleDateString()}</strong> ${esc(o.email)} · ${money(o.total)}<br>${o.items.map(i => esc(i.name) + ' × ' + i.qty).join('<br>')}<br><span class="tag">Ship to: ${addr(o.shipTo)}</span></span>
+<span>${o.status === 'shipped' ? `Shipped ${esc(o.tracking)}` : `<input class="t" id="t-${o.id}" placeholder="Tracking number" aria-label="Tracking number"> <button class="btn" onclick="ship('${o.id}')">Mark shipped</button>`}</span></div>`).join('') || '<p>No paid orders yet.</p>'}</div>
+<h2>Inventory and prices</h2><div class="adm">${d.products.map(p => `<div class="row"><span>${esc(p.name)}</span><span>$<input id="pr-${p.id}" type="number" step="0.01" min="0.01" value="${p.price}" aria-label="Price"> Stock <input id="st-${p.id}" type="number" min="0" value="${p.stock}" aria-label="Stock"> <button class="btn alt" onclick="saveP('${p.id}')">Save</button></span></div>`).join('')}</div>`;
+  }
+};
+window.ship = async id => { try { await api('admin/ship/' + id, { tracking: $('#t-' + id).value }); say('Marked shipped.'); route(); } catch (e) { say(e.message); } };
+window.saveP = async id => { try { await api('admin/product/' + id, { price: $('#pr-' + id).value, stock: $('#st-' + id).value }); P = await (await fetch('/api/products')).json(); say('Saved.'); } catch (e) { say(e.message); } };
+window.go = () => { const q = new URLSearchParams(); ['category', 'set', 'o', 's'].forEach(k => $('#' + k).value && q.set(k, $('#' + k).value)); location.hash = '#/shop?' + q; };
+window.auth = async (e, mode) => {
+  e.preventDefault(); const f = Object.fromEntries(new FormData(e.target));
+  try { const r = await api(mode, f); tok = localStorage.tok = r.token; uname = localStorage.uname = r.name; isAdmin = r.admin; localStorage.admin = r.admin ? '1' : '0'; location.hash = count() ? '#/cart' : '#/account'; nav(); }
+  catch (er) { $('#msg').textContent = er.message; }
+  return false;
+};
+window.logout = () => { ['tok', 'uname', 'admin'].forEach(k => localStorage.removeItem(k)); tok = uname = null; isAdmin = false; nav(); location.hash = '#/'; return ''; };
+window.checkout = async () => {
+  if (!tok) { location.hash = '#/login'; return; }
+  $('#pay').disabled = true;
+  try { location = (await api('checkout', { items: Object.entries(cart).map(([id, qty]) => ({ id, qty })) })).url; }
+  catch (er) { $('#msg').textContent = er.message; $('#pay').disabled = false; }
+};
+async function route() {
+  const [path, qs] = location.hash.slice(2).split('?'), [name, arg] = path.split('/');
+  try { app.innerHTML = await (views[name || 'home'] || views.home)(arg, new URLSearchParams(qs || '')); }
+  catch (e) { app.innerHTML = `<p class="err">${esc(e.message)}</p>`; }
+  window.scrollTo(0, 0);
+}
+addEventListener('hashchange', route);
+Promise.all([fetch('/api/products').then(r => r.json()), fetch('/api/config').then(r => r.json())]).then(([p, c]) => {
+  P = p; C = c; nav();
+  $('#foot').innerHTML = `<nav><a href="#/info">Shipping, returns &amp; privacy</a><a href="mailto:${esc(C.supportEmail)}">Contact</a></nav>
+<span>© ${new Date().getFullYear()} ${esc(C.legalName)}. Radix Vault is a division of ${esc(C.legalName)}.</span>
+<span>Radix Vault is an independent retailer and is not affiliated with, endorsed by, or sponsored by Bandai, Shueisha or Toei Animation. ONE PIECE and related names and marks belong to their respective owners.</span>`;
+  route();
+});
+</script></body></html>

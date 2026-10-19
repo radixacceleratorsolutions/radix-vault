@@ -1,0 +1,8 @@
+{
+  "brand": "Radix Vault",
+  "legalName": "Radix Accelerator Solutions LLC",
+  "supportEmail": "support@radixvault.example",
+  "tagline": "Factory-sealed One Piece Card Game product from Radix Vault.",
+  "shipping": { "flat": 6.99, "freeOver": 150, "handling": "2 business days", "countries": ["US"] },
+  "returns": "Unopened, factory-sealed product can be returned within 14 days of delivery for a refund of the item price. Opened boxes and packs are final sale. If your order arrives damaged or incorrect, email us within 7 days with photos and we will make it right."
+}

@@ -1,0 +1,14 @@
+{
+  "name": "radix-vault",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Radix Vault storefront by Radix Accelerator Solutions LLC",
+  "scripts": { "start": "node --env-file=.env server.js" },
+  "engines": { "node": ">=20.6" },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "stripe": "^16.0.0"
+  }
+}
